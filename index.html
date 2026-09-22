@@ -25,8 +25,8 @@
 
         <nav class="main-nav" aria-label="Main navigation">
           <a href="#about">About</a>
+          <a href="#projects">Projects</a>
           <a href="#work">Work</a>
-          <a href="#work">Projects</a>
           <a href="#contact">Contact</a>
         </nav>
 
@@ -171,20 +171,11 @@
         </div>
       </section>
 
-      <section id="work" class="projects">
+      <section id="projects" class="projects">
         <div class="container">
           <div class="section-header">
-            <p class="eyebrow">Work</p>
+            <p class="eyebrow">Projects</p>
             <h2>Selected engineering work.</h2>
-          </div>
-
-          <div class="work-showcase" aria-label="Featured work slideshow">
-            <div class="slideshow" id="work-slideshow">
-              <div class="slides" id="work-slides" aria-live="polite"></div>
-              <button class="slideshow-control prev" type="button" aria-label="Previous image">←</button>
-              <button class="slideshow-control next" type="button" aria-label="Next image">→</button>
-            </div>
-            <div class="slideshow-dots" id="work-dots" aria-label="Choose slide"></div>
           </div>
 
           <div class="project-grid">
@@ -285,7 +276,24 @@
                 </ul>
               </div>
             </article>
+          </div>
+        </div>
+      </section>
 
+      <section id="work" class="projects">
+        <div class="container">
+          <div class="section-header">
+            <p class="eyebrow">Work</p>
+            <h2>Featured project gallery.</h2>
+          </div>
+
+          <div class="work-showcase" aria-label="Featured work slideshow">
+            <div class="slideshow" id="work-slideshow">
+              <div class="slides" id="work-slides" aria-live="polite"></div>
+              <button class="slideshow-control prev" type="button" aria-label="Previous slide">←</button>
+              <button class="slideshow-control next" type="button" aria-label="Next slide">→</button>
+            </div>
+            <div class="slideshow-dots" id="work-dots" aria-label="Choose slide"></div>
           </div>
         </div>
       </section>
@@ -309,7 +317,7 @@
         "pbex2.png",
         "pbex3.png",
         "pbex4.png",
-        "prop1.png",
+        "prop1.png"
       ].map((fileName) => ({
         src: `assets/slideshow/${fileName}`,
         alt: fileName.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ")
@@ -320,14 +328,26 @@
       const prevButton = document.querySelector(".slideshow-control.prev");
       const nextButton = document.querySelector(".slideshow-control.next");
       const slideshow = document.getElementById("work-slideshow");
+      const visibleSlides = 3;
       let currentSlideIndex = 0;
       let autoplayTimer;
 
+      function getVisibleSlides() {
+        const start = currentSlideIndex;
+        const windowItems = workSlides.slice(start, start + visibleSlides);
+        if (windowItems.length < visibleSlides) {
+          return windowItems.concat(workSlides.slice(0, visibleSlides - windowItems.length));
+        }
+        return windowItems;
+      }
+
       function renderSlides() {
-        slidesContainer.innerHTML = workSlides
+        const visible = getVisibleSlides();
+
+        slidesContainer.innerHTML = visible
           .map(
             (slide, index) => `
-              <figure class="slide ${index === currentSlideIndex ? "active" : ""}" aria-hidden="${index === currentSlideIndex ? "false" : "true"}">
+              <figure class="slide ${index === 0 ? "active" : ""}" aria-hidden="${index === 0 ? "false" : "true"}">
                 <img src="${slide.src}" alt="${slide.alt}" />
               </figure>
             `
