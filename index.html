@@ -26,7 +26,7 @@
         <nav class="main-nav" aria-label="Main navigation">
           <a href="#about">About</a>
           <a href="#work">Work</a>
-          <a href="#projects">Projects</a>
+          <a href="#work">Projects</a>
           <a href="#contact">Contact</a>
         </nav>
 
@@ -171,11 +171,20 @@
         </div>
       </section>
 
-      <section id="projects" class="projects">
+      <section id="work" class="projects">
         <div class="container">
           <div class="section-header">
-            <p class="eyebrow">Projects</p>
+            <p class="eyebrow">Work</p>
             <h2>Selected engineering work.</h2>
+          </div>
+
+          <div class="work-showcase" aria-label="Featured work slideshow">
+            <div class="slideshow" id="work-slideshow">
+              <div class="slides" id="work-slides" aria-live="polite"></div>
+              <button class="slideshow-control prev" type="button" aria-label="Previous image">←</button>
+              <button class="slideshow-control next" type="button" aria-label="Next image">→</button>
+            </div>
+            <div class="slideshow-dots" id="work-dots" aria-label="Choose slide"></div>
           </div>
 
           <div class="project-grid">
@@ -281,5 +290,114 @@
         </div>
       </section>
     </main>
-  </body>
+    <script>
+      const workSlides = [
+        "Screenshot 2026-05-04 093415.png",
+        "Screenshot 2026-05-04 093452.png",
+        "Screenshot 2026-05-04 093533.png",
+        "Screenshot 2026-05-04 093637.png",
+        "Screenshot 2026-05-12 153412.png",
+        "Screenshot 2026-05-12 153435.png",
+        "Screenshot 2026-05-12 153528.png",
+        "Screenshot 2026-05-12 154103.png",
+        "Screenshot 2026-05-12 154329.png",
+        "Screenshot 2026-05-12 154342.png",
+        "Screenshot 2026-05-12 155406.png",
+        "Screenshot 2026-05-12 160010.png",
+        "Screenshot 2026-05-12 160028.png",
+        "pbex1.png",
+        "pbex2.png",
+        "pbex3.png",
+        "pbex4.png",
+        "prop1.png",
+      ].map((fileName) => ({
+        src: `assets/slideshow/${fileName}`,
+        alt: fileName.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ")
+      }));
+
+      const slidesContainer = document.getElementById("work-slides");
+      const dotsContainer = document.getElementById("work-dots");
+      const prevButton = document.querySelector(".slideshow-control.prev");
+      const nextButton = document.querySelector(".slideshow-control.next");
+      const slideshow = document.getElementById("work-slideshow");
+      let currentSlideIndex = 0;
+      let autoplayTimer;
+
+      function renderSlides() {
+        slidesContainer.innerHTML = workSlides
+          .map(
+            (slide, index) => `
+              <figure class="slide ${index === currentSlideIndex ? "active" : ""}" aria-hidden="${index === currentSlideIndex ? "false" : "true"}">
+                <img src="${slide.src}" alt="${slide.alt}" />
+              </figure>
+            `
+          )
+          .join("");
+
+        dotsContainer.innerHTML = workSlides
+          .map(
+            (slide, index) => `
+              <button
+                class="dot ${index === currentSlideIndex ? "active" : ""}"
+                type="button"
+                aria-label="Show slide ${index + 1}"
+                aria-pressed="${index === currentSlideIndex ? "true" : "false"}"
+              ></button>
+            `
+          )
+          .join("");
+
+        dotsContainer.querySelectorAll(".dot").forEach((dot, index) => {
+          dot.addEventListener("click", () => {
+            currentSlideIndex = index;
+            renderSlides();
+            restartAutoplay();
+          });
+        });
+      }
+
+      function showSlide(direction = 1) {
+        currentSlideIndex = (currentSlideIndex + direction + workSlides.length) % workSlides.length;
+        renderSlides();
+      }
+
+      function startAutoplay() {
+        autoplayTimer = setInterval(() => {
+          showSlide(1);
+        }, 5000);
+      }
+
+      function restartAutoplay() {
+        clearInterval(autoplayTimer);
+        startAutoplay();
+      }
+
+      prevButton.addEventListener("click", () => {
+        showSlide(-1);
+        restartAutoplay();
+      });
+
+      nextButton.addEventListener("click", () => {
+        showSlide(1);
+        restartAutoplay();
+      });
+
+      slideshow.addEventListener("mouseenter", () => clearInterval(autoplayTimer));
+      slideshow.addEventListener("mouseleave", startAutoplay);
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowLeft") {
+          showSlide(-1);
+          restartAutoplay();
+        }
+
+        if (event.key === "ArrowRight") {
+          showSlide(1);
+          restartAutoplay();
+        }
+      });
+
+      renderSlides();
+      startAutoplay();
+    </script>  </body>
 </html
