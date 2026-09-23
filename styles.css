@@ -643,10 +643,9 @@ a {
   text-decoration: none;
 }
 
-.cube-puc-image {
+.cube-puc-pdf {
   transform: rotate(-90deg);
   transform-origin: center center;
-  object-fit: cover;
 }
 
 .project-photo-placeholder {
