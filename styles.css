@@ -188,6 +188,16 @@ a {
   place-items: center;
 }
 
+.hero-showcase {
+  width: min(100%, 520px);
+  margin: 0 auto;
+  padding: 0.75rem;
+}
+
+.hero-slideshow {
+  height: 410px;
+}
+
 .card {
   position: absolute;
   background: rgba(255, 255, 255, 0.72);

@@ -52,15 +52,14 @@
             </div>
           </div>
 
-          <div class="hero-visual" aria-hidden="true">
-            <div class="card card-large">
-              <span class="tag">Featured</span>
-              <h2>Design systems</h2>
-              <p>Clarity, consistency, and better UX at scale.</p>
-            </div>
-            <div class="card card-small">
-              <span class="mini-label">2026</span>
-              <strong>Trusted by teams worldwide</strong>
+          <div class="hero-visual" aria-label="Featured work slideshow">
+            <div class="work-showcase hero-showcase">
+              <div class="slideshow hero-slideshow" id="hero-slideshow">
+                <div class="slides" id="hero-slides" aria-live="polite"></div>
+                <button class="slideshow-control prev hero-slideshow-control" type="button" aria-label="Previous slide">←</button>
+                <button class="slideshow-control next hero-slideshow-control" type="button" aria-label="Next slide">→</button>
+              </div>
+              <div class="slideshow-dots" id="hero-dots" aria-label="Choose slide"></div>
             </div>
           </div>
         </div>
@@ -309,101 +308,140 @@
         alt: fileName.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ")
       }));
 
-      const slidesContainer = document.getElementById("work-slides");
-      const dotsContainer = document.getElementById("work-dots");
-      const prevButton = document.querySelector(".slideshow-control.prev");
-      const nextButton = document.querySelector(".slideshow-control.next");
-      const slideshow = document.getElementById("work-slideshow");
-      const visibleSlides = 3;
-      let currentSlideIndex = 0;
-      let autoplayTimer;
+      function initializeSlideshow({
+        slidesContainer,
+        dotsContainer,
+        prevButton,
+        nextButton,
+        slideshow,
+        visibleSlides = 3,
+        slides = workSlides,
+        initialIndex = 0,
+        autoplayDelay = 5000,
+      }) {
+        let currentSlideIndex = initialIndex;
+        let autoplayTimer;
 
-      function getVisibleSlides() {
-        const start = currentSlideIndex;
-        const windowItems = workSlides.slice(start, start + visibleSlides);
-        if (windowItems.length < visibleSlides) {
-          return windowItems.concat(workSlides.slice(0, visibleSlides - windowItems.length));
+        function getVisibleSlides() {
+          const start = currentSlideIndex;
+          const windowItems = slides.slice(start, start + visibleSlides);
+
+          if (windowItems.length < visibleSlides) {
+            return windowItems.concat(slides.slice(0, visibleSlides - windowItems.length));
+          }
+
+          return windowItems;
         }
-        return windowItems;
-      }
 
-      function renderSlides() {
-        const visible = getVisibleSlides();
+        function renderSlides() {
+          const visible = getVisibleSlides();
 
-        slidesContainer.innerHTML = visible
-          .map(
-            (slide, index) => `
-              <figure class="slide ${index === 0 ? "active" : ""}" aria-hidden="${index === 0 ? "false" : "true"}">
-                <img src="${slide.src}" alt="${slide.alt}" />
-              </figure>
-            `
-          )
-          .join("");
+          slidesContainer.innerHTML = visible
+            .map(
+              (slide, index) => `
+                <figure class="slide ${index === 0 ? "active" : ""}" aria-hidden="${index === 0 ? "false" : "true"}">
+                  <img src="${slide.src}" alt="${slide.alt}" />
+                </figure>
+              `
+            )
+            .join("");
 
-        dotsContainer.innerHTML = workSlides
-          .map(
-            (slide, index) => `
-              <button
-                class="dot ${index === currentSlideIndex ? "active" : ""}"
-                type="button"
-                aria-label="Show slide ${index + 1}"
-                aria-pressed="${index === currentSlideIndex ? "true" : "false"}"
-              ></button>
-            `
-          )
-          .join("");
+          dotsContainer.innerHTML = slides
+            .map(
+              (slide, index) => `
+                <button
+                  class="dot ${index === currentSlideIndex ? "active" : ""}"
+                  type="button"
+                  aria-label="Show slide ${index + 1}"
+                  aria-pressed="${index === currentSlideIndex ? "true" : "false"}"
+                ></button>
+              `
+            )
+            .join("");
 
-        dotsContainer.querySelectorAll(".dot").forEach((dot, index) => {
-          dot.addEventListener("click", () => {
-            currentSlideIndex = index;
-            renderSlides();
+          dotsContainer.querySelectorAll(".dot").forEach((dot, index) => {
+            dot.addEventListener("click", () => {
+              currentSlideIndex = index;
+              renderSlides();
+              restartAutoplay();
+            });
+          });
+        }
+
+        function showSlide(direction = 1) {
+          currentSlideIndex = (currentSlideIndex + direction + slides.length) % slides.length;
+          renderSlides();
+        }
+
+        function startAutoplay() {
+          autoplayTimer = setInterval(() => {
+            showSlide(1);
+          }, autoplayDelay);
+        }
+
+        function restartAutoplay() {
+          clearInterval(autoplayTimer);
+          startAutoplay();
+        }
+
+        if (prevButton) {
+          prevButton.addEventListener("click", () => {
+            showSlide(-1);
             restartAutoplay();
           });
+        }
+
+        if (nextButton) {
+          nextButton.addEventListener("click", () => {
+            showSlide(1);
+            restartAutoplay();
+          });
+        }
+
+        if (slideshow) {
+          slideshow.addEventListener("mouseenter", () => clearInterval(autoplayTimer));
+          slideshow.addEventListener("mouseleave", startAutoplay);
+        }
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "ArrowLeft") {
+            showSlide(-1);
+            restartAutoplay();
+          }
+
+          if (event.key === "ArrowRight") {
+            showSlide(1);
+            restartAutoplay();
+          }
         });
-      }
 
-      function showSlide(direction = 1) {
-        currentSlideIndex = (currentSlideIndex + direction + workSlides.length) % workSlides.length;
         renderSlides();
-      }
-
-      function startAutoplay() {
-        autoplayTimer = setInterval(() => {
-          showSlide(1);
-        }, 5000);
-      }
-
-      function restartAutoplay() {
-        clearInterval(autoplayTimer);
         startAutoplay();
       }
 
-      prevButton.addEventListener("click", () => {
-        showSlide(-1);
-        restartAutoplay();
+      const heroSlideshow = document.getElementById("hero-slideshow");
+      const workSlideshow = document.getElementById("work-slideshow");
+
+      initializeSlideshow({
+        slidesContainer: document.getElementById("hero-slides"),
+        dotsContainer: document.getElementById("hero-dots"),
+        prevButton: heroSlideshow.querySelector(".slideshow-control.prev"),
+        nextButton: heroSlideshow.querySelector(".slideshow-control.next"),
+        slideshow: heroSlideshow,
+        visibleSlides: 3,
+        slides: workSlides,
+        initialIndex: 0,
       });
 
-      nextButton.addEventListener("click", () => {
-        showSlide(1);
-        restartAutoplay();
+      initializeSlideshow({
+        slidesContainer: document.getElementById("work-slides"),
+        dotsContainer: document.getElementById("work-dots"),
+        prevButton: workSlideshow.querySelector(".slideshow-control.prev"),
+        nextButton: workSlideshow.querySelector(".slideshow-control.next"),
+        slideshow: workSlideshow,
+        visibleSlides: 3,
+        slides: workSlides,
+        initialIndex: 0,
       });
-
-      slideshow.addEventListener("mouseenter", () => clearInterval(autoplayTimer));
-      slideshow.addEventListener("mouseleave", startAutoplay);
-
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "ArrowLeft") {
-          showSlide(-1);
-          restartAutoplay();
-        }
-
-        if (event.key === "ArrowRight") {
-          showSlide(1);
-          restartAutoplay();
-        }
-      });
-
-      renderSlides();
-      startAutoplay();
     </script>  </body>
 </html
