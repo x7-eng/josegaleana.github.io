@@ -26,7 +26,6 @@
         <nav class="main-nav" aria-label="Main navigation">
           <a href="#about">About</a>
           <a href="#projects">Projects</a>
-          <a href="#work">Work</a>
           <a href="#contact">Contact</a>
         </nav>
 
@@ -175,12 +174,8 @@
                   Complete mechanical redesign of the compact X-ray inspection system “Cube,” including electromechanical layout and enclosure shielding. Developed manufacturing-ready CAD, BOMs, and documentation through peer and cross-departmental collaboration to support assembly and production.
                 </p>
                 <div class="project-gallery">
-                  <a class="project-gallery-thumb" href="assets/cubepuc.png" target="_blank" rel="noreferrer" aria-label="Open Cube PUC preview image">
-                    <img src="assets/cubepuc.png" alt="Cube PUC preview" class="cube-puc-image" />
-                  </a>
-                  <a class="project-gallery-thumb" href="assets/UoM%20Cabinet%20Assembly_Exploded_Views.pdf" target="_blank" rel="noreferrer" aria-label="Open UoM Cabinet exploded view PDF">
-                    <img src="assets/UoM%20Cabinet%20Assembly_Exploded_Views.png" alt="UoM Cabinet exploded view preview" />
-                  </a>
+                  <img src="assets/cubepuc.png" class="project-photo cube-puc-image" alt="Cube PUC preview" />
+                  <img src="assets/UoM%20Cabinet%20Assembly_Exploded_Views.png" class="project-photo project-photo-uom-cabinet" alt="UoM Cabinet exploded view preview" />
                 </div>
 
                 <ul class="project-meta">
@@ -268,39 +263,14 @@
         </div>
       </section>
 
-      <section id="work" class="projects">
-        <div class="container">
-          <div class="section-header">
-            <p class="eyebrow">Work</p>
-            <h2>Design in practice</h2>
-          </div>
-
-          <div class="work-showcase" aria-label="Featured work slideshow">
-            <div class="slideshow" id="work-slideshow">
-              <div class="slides" id="work-slides" aria-live="polite"></div>
-              <button class="slideshow-control prev" type="button" aria-label="Previous slide">←</button>
-              <button class="slideshow-control next" type="button" aria-label="Next slide">→</button>
-            </div>
-            <div class="slideshow-dots" id="work-dots" aria-label="Choose slide"></div>
-          </div>
-        </div>
-      </section>
     </main>
     <script>
       const workSlides = [
         "Screenshot 2026-05-04 093415.png",
-        "Screenshot 2026-05-04 093452.png",
-        "Screenshot 2026-05-04 093533.png",
         "Screenshot 2026-05-04 093637.png",
-        "Screenshot 2026-05-12 153412.png",
-        "Screenshot 2026-05-12 153435.png",
-        "Screenshot 2026-05-12 153528.png",
-        "Screenshot 2026-05-12 154103.png",
-        "Screenshot 2026-05-12 154329.png",
-        "Screenshot 2026-05-12 154342.png",
-        "Screenshot 2026-05-12 155406.png",
-        "Screenshot 2026-05-12 160010.png",
         "Screenshot 2026-05-12 160028.png",
+        "TDN.png",
+        "battery_bumper.png",
         "pbex1.png",
         "pbex2.png",
         "pbex3.png",
@@ -424,26 +394,30 @@
       const heroSlideshow = document.getElementById("hero-slideshow");
       const workSlideshow = document.getElementById("work-slideshow");
 
-      initializeSlideshow({
-        slidesContainer: document.getElementById("hero-slides"),
-        dotsContainer: document.getElementById("hero-dots"),
-        prevButton: heroSlideshow.querySelector(".slideshow-control.prev"),
-        nextButton: heroSlideshow.querySelector(".slideshow-control.next"),
-        slideshow: heroSlideshow,
-        visibleSlides: 3,
-        slides: workSlides,
-        initialIndex: 0,
-      });
+      if (heroSlideshow) {
+        initializeSlideshow({
+          slidesContainer: document.getElementById("hero-slides"),
+          dotsContainer: document.getElementById("hero-dots"),
+          prevButton: heroSlideshow.querySelector(".slideshow-control.prev"),
+          nextButton: heroSlideshow.querySelector(".slideshow-control.next"),
+          slideshow: heroSlideshow,
+          visibleSlides: 3,
+          slides: workSlides,
+          initialIndex: 0,
+        });
+      }
 
-      initializeSlideshow({
-        slidesContainer: document.getElementById("work-slides"),
-        dotsContainer: document.getElementById("work-dots"),
-        prevButton: workSlideshow.querySelector(".slideshow-control.prev"),
-        nextButton: workSlideshow.querySelector(".slideshow-control.next"),
-        slideshow: workSlideshow,
-        visibleSlides: 3,
-        slides: workSlides,
-        initialIndex: 0,
-      });
+      if (workSlideshow) {
+        initializeSlideshow({
+          slidesContainer: document.getElementById("work-slides"),
+          dotsContainer: document.getElementById("work-dots"),
+          prevButton: workSlideshow.querySelector(".slideshow-control.prev"),
+          nextButton: workSlideshow.querySelector(".slideshow-control.next"),
+          slideshow: workSlideshow,
+          visibleSlides: 3,
+          slides: workSlides,
+          initialIndex: 0,
+        });
+      }
     </script>  </body>
 </html
